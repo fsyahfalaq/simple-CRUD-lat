@@ -1,11 +1,27 @@
 <?php 
-    if (isset($_POST["submit"])) {
-        if ($_POST["username"] == "admin" && $_POST["password"] == "admin") {
+require 'func.php';
+
+if (isset($_POST["login"])) {
+    
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+
+    $query = "SELECT * FROM users WHERE username = '$username'";
+    $login = mysqli_query($link, $query);
+    
+    
+    if ($login) {
+        echo "hello!";
+        //password checking
+        $row = mysqli_fetch_assoc($login);
+        if (password_verify($password, $row["password"])) {
             header("Location: admin.php");
-            exit;
+            exit();
         }
-            $errorLogin = true;
     }
+
+    $errorLogin = true;
+}
 
 ?>
 
@@ -27,7 +43,7 @@
         <label for="password">Password: </label>
         <input type="password" name="password" id="password">
         <br>
-        <button type="submit" name="submit">Submit!</button>
+        <button type="submit" name="login">Login</button>
         <?php 
             if (isset($errorLogin)) {
                 echo "<label>Password atau Username Anda Salah</label>";

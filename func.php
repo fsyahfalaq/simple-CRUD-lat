@@ -12,6 +12,37 @@ function query($query) {
     return $rows;
 }
 
+function register($data) {
+    global $link;
+    $username = strtolower(htmlspecialchars($data["username"]));
+    $email = htmlspecialchars($data["email"]);
+    $password = mysqli_real_escape_string($link, $data["password"]);
+    $password2 = mysqli_real_escape_string($link, $data["password2"]);
+
+    if ($password !== $password2) {
+        return $result = "<script>
+                alert('Please retype password again');
+            </script>";
+    }
+
+    $password = password_hash($password, PASSWORD_DEFAULT);
+
+    $query = "INSERT INTO users VALUES (0, '$username', '$email', '$password')";
+
+    if (mysqli_query($link, $query)) {
+        $result = "Registration succesfully completed";
+    }
+    else if (mysqli_errno($link) == 1062) {
+        //1062 is duplicate username error code
+        $result = "username already exist";
+    }
+    else {
+        $result = "Error: " . $query . mysqli_errno($link) . "<br>" . mysqli_error($link);
+    }
+
+    return $result;
+}
+
 function addData($data) {
     global $link;
     $nama = htmlspecialchars($data["nama"]);
