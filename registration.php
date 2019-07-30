@@ -1,5 +1,11 @@
 <?php
+session_start();
 require 'func.php';
+
+if (isset($_SESSION["login"])) {
+    header("Location: admin.php");
+    exit();
+}
 
 if (isset($_POST["register"])) {
     

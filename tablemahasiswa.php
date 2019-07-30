@@ -1,20 +1,26 @@
 <?php 
-    require 'func.php';
+session_start();
+require 'func.php';
 
-    $mahasiswa = query("SELECT * FROM mahasiswa");
+if ($_SESSION["login"] == false) {
+    header("Location: login.php");
+    exit();
+}
+
+$mahasiswa = query("SELECT * FROM mahasiswa");
     
-    if (isset($_GET["delete"])) {
+if (isset($_GET["delete"])) {
         
-        $result = deleteData($_GET["id"]); ?>
+    $result = deleteData($_GET["id"]); ?>
         <script>
         alert('<?=$result;?>');
         document.location.href = 'tablemahasiswa.php';
         </script>
 <?php } 
     
-    if (isset($_GET["search"])) {
-        $keyword = htmlspecialchars($_GET["keyword"]);
-        $mahasiswa = query("SELECT * FROM mahasiswa WHERE 
+if (isset($_GET["search"])) {
+    $keyword = htmlspecialchars($_GET["keyword"]);
+    $mahasiswa = query("SELECT * FROM mahasiswa WHERE 
         nama LIKE '%$keyword%' OR
         npm LIKE '%$keyword%' OR
         jurusan LIKE '%$keyword%'
@@ -33,6 +39,9 @@
 </head>
 <body>
     <h1>Table Data Mahasiswa</h1>
+    
+<a href="logout.php">Logout</a>
+
     <div style="margin-bottom:10px">
     <form action="" method="get">
         <input type="text" name="keyword" id="keyword">
